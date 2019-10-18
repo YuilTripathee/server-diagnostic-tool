@@ -155,22 +155,14 @@ def getBatteryInfo():
 
 def getMemoryInfo():
     print('Gathering memory information')
-    totalRAM = 1.0
-    totalRAM = psutil.virtual_memory()[0] * totalRAM
-    totalRAM = str("{:.4f}".format(totalRAM / (1024 * 1024 * 1024))) + ' GB'
-
-    avalRAM = 1.0
-    avalRAM = psutil.virtual_memory()[1] * avalRAM
-    avalRAM = str("{:.4f}".format(avalRAM / (1024 * 1024 * 1024))) + ' GB'
-
-    usedRAM = 1.0
-    usedRAM = psutil.virtual_memory()[3] * usedRAM
-    usedRAM = str("{:.4f}".format(usedRAM / (1024 * 1024 * 1024))) + ' GB'
-
-    freeRAM = 1.0
-    freeRAM = psutil.virtual_memory()[4] * freeRAM
-    freeRAM = str("{:.4f}".format(freeRAM / (1024 * 1024 * 1024))) + ' GB'
-
+    def ramSizeinGB(memorySize): return str(
+        "{:.4f}".format((memorySize * 1.0) / (1024 * 1024 * 1024))) + ' GB'
+    
+    totalRAM = ramSizeinGB(psutil.virtual_memory()[0])
+    avalRAM = ramSizeinGB(psutil.virtual_memory()[1])
+    usedRAM = ramSizeinGB(psutil.virtual_memory()[3])
+    freeRAM = ramSizeinGB(psutil.virtual_memory()[4])
+    
     return totalRAM, avalRAM, usedRAM, freeRAM
 
 
@@ -253,9 +245,6 @@ def diagnose_file(treeType):
     path_string = ''''''
     for path in paths:
         path_string += path.displayable() + '\n'
-    # with open('output_tree.txt', 'w', encoding='utf-8') as fp:
-    #     fp.write(path_string)
-    #     fp.close()
     print("Directory tree diagnosis report completed sucessfully!\n")
     return path_string
 
@@ -359,7 +348,7 @@ def start_diagnosis(treeType):
     target_folder_name = 'test/' + str(datetime.datetime.now()) + '/'
     if not os.path.exists(target_folder_name):
         os.makedirs(target_folder_name)
-        
+
     # saving tree structure
     output_file = target_folder_name + 'file_tree.txt'
     with open(output_file, 'w+', encoding='utf-8') as fp:
